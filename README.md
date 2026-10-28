@@ -5,9 +5,9 @@ Weekly builds of GCC trunk ([gcc-mirror/gcc](https://github.com/gcc-mirror/gcc),
 
 | Build | Archive | Docker image | Nix |
 | --- | --- | --- | --- |
-| x86-64 Linux, native | `gcc-linux-native-<commit>.tar.zst` | `ghcr.io/OWNER/gcc-nightly:nightly` (amd64) | `x86_64-linux` |
-| arm64 Linux, native | `gcc-linux-arm64-native-<commit>.tar.zst` | `ghcr.io/OWNER/gcc-nightly:nightly` (arm64) | `aarch64-linux` |
-| x86-64 Linux → Windows (MinGW-w64) | `gcc-windows-<commit>.tar.zst` | `ghcr.io/OWNER/gcc-nightly:windows-nightly` | — |
+| x86-64 Linux, native | `gcc-linux-native-<commit>.tar.zst` | `ghcr.io/aliremu/gcc-nightly:nightly` (amd64) | `x86_64-linux` |
+| arm64 Linux, native | `gcc-linux-arm64-native-<commit>.tar.zst` | `ghcr.io/aliremu/gcc-nightly:nightly` (arm64) | `aarch64-linux` |
+| x86-64 Linux → Windows (MinGW-w64) | `gcc-windows-<commit>.tar.zst` | `ghcr.io/aliremu/gcc-nightly:windows-nightly` | — |
 | Windows-hosted, native | `gcc-windows-native-<commit>.tar.zst` | — | — |
 
 Every build gets a release and git tag `<version>-<date>-<commit>`, such as `17.0.0-20261027-2e76f0ca4736`.
@@ -21,10 +21,10 @@ The images are Debian bookworm with GCC in `/opt/gcc-trunk` (on `PATH`, and set 
 
 ```dockerfile
 # As a base image
-FROM ghcr.io/OWNER/gcc-nightly:nightly
+FROM ghcr.io/aliremu/gcc-nightly:nightly
 
 # Or copy the toolchain into another bookworm-or-newer image
-FROM ghcr.io/OWNER/gcc-nightly:nightly AS gcc
+FROM ghcr.io/aliremu/gcc-nightly:nightly AS gcc
 FROM debian:bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends binutils libc6-dev
 COPY --from=gcc /opt/gcc-trunk /opt/gcc-trunk
@@ -38,9 +38,9 @@ Pin a build with a release tag instead of `nightly`, for example `:17.0.0-202610
 The default branch always points at the latest trunk build, and each release tag pins one build.
 
 ```sh
-nix shell github:OWNER/gcc-nightly            # gcc/g++ on PATH
-nix develop github:OWNER/gcc-nightly          # shell whose cc/c++ is GCC trunk
-nix shell github:OWNER/gcc-nightly/<tag>      # a specific build
+nix shell github:Aliremu/gcc-nightly            # gcc/g++ on PATH
+nix develop github:Aliremu/gcc-nightly          # shell whose cc/c++ is GCC trunk
+nix shell github:Aliremu/gcc-nightly/<tag>      # a specific build
 ```
 
 In a flake, use the overlay:
@@ -48,7 +48,7 @@ In a flake, use the overlay:
 ```nix
 {
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.gcc-nightly.url = "github:OWNER/gcc-nightly";
+  inputs.gcc-nightly.url = "github:Aliremu/gcc-nightly";
 
   outputs = { nixpkgs, gcc-nightly, ... }:
     let
