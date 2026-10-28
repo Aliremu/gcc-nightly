@@ -16,9 +16,12 @@ docker run --rm --name "${CONTAINER_NAME:-gcc-build-$$}" \
         trap "chown -R \"\$HOST_OWNER\" /src/gcc /src/dist 2>/dev/null || true" EXIT
         export DEBIAN_FRONTEND=noninteractive
         apt-get update
+        # libgmp-dev: when build != host, gcc/configure re-runs itself for the
+        # build machine with GMPINC cleared, and still requires a usable gmp.h.
         apt-get install -y --no-install-recommends \
             build-essential ca-certificates curl wget git file m4 flex bison \
             texinfo python3 bzip2 xz-utils zstd zlib1g-dev \
+            libgmp-dev \
             gcc-mingw-w64-x86-64-posix g++-mingw-w64-x86-64-posix \
             binutils-mingw-w64-x86-64 mingw-w64-x86-64-dev \
             gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \

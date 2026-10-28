@@ -13,9 +13,14 @@ BUILD_TARGETS="${BUILD_TARGETS:-windows,windows-native,linux-native,linux-arm64}
 BINUTILS_VERSION="${BINUTILS_VERSION:-2.45.1}"
 MINGW_SYSROOT="${MINGW_SYSROOT:-/usr/x86_64-w64-mingw32}"
 export M4="${M4:-/usr/bin/m4}"
+# GCC's default -g -O2 makes cc1plus ~450 MB and slows compiling and linking;
+# set GCC_CFLAGS="-g -O2" to keep debug info in the compiler and runtimes.
+GCC_CFLAGS="${GCC_CFLAGS:--O2}"
+export CFLAGS="$GCC_CFLAGS" CXXFLAGS="$GCC_CFLAGS"
+export CFLAGS_FOR_TARGET="$GCC_CFLAGS" CXXFLAGS_FOR_TARGET="$GCC_CFLAGS"
 BUILD_PROFILE="mingw64-full-gcc-headers-v7"
 NATIVE_WINDOWS_PROFILE="windows-hosted-gcc-with-binutils-v2"
-NATIVE_LINUX_PROFILE="linux-native-gcc-with-stdlib-v1"
+NATIVE_LINUX_PROFILE="linux-native-gcc-with-stdlib-v2"
 LINUX_ARM64_CROSS_PROFILE="linux-arm64-cross-gcc-with-stdlib-v5"
 LINUX_ARM64_PROFILE="linux-arm64-hosted-gcc-v3"
 
@@ -65,10 +70,10 @@ prepare_gcc_build_dir() {
 }
 
 # Build trees cannot safely be reused after the source moves to a different
-# commit, or after the configure profile changes.
+# commit, or after the configure profile or flags change.
 reset_build_dir() {
     local build="$1" profile="$2"
-    if [[ ! -f "$build/.source-commit" ]] || [[ "$(<"$build/.source-commit")" != "$COMMIT:$profile" ]]; then
+    if [[ ! -f "$build/.source-commit" ]] || [[ "$(<"$build/.source-commit")" != "$COMMIT:$profile:$GCC_CFLAGS" ]]; then
         rm -rf "$build"
     fi
     mkdir -p "$build"
@@ -188,7 +193,7 @@ build_windows() {
                 --disable-werror \
                 --enable-checking=release
         )
-        printf '%s\n' "$COMMIT:$BUILD_PROFILE" > "$build/.source-commit"
+        printf '%s\n' "$COMMIT:$BUILD_PROFILE:$GCC_CFLAGS" > "$build/.source-commit"
     fi
 
     build_compiler_and_runtimes "$build" "$stage"
@@ -208,8 +213,11 @@ build_linux_native() {
     if [[ ! -f "$build/Makefile" ]]; then
         (
             cd "$build"
+            # Only all-gcc is built, so a bootstrap would stop at an
+            # unoptimized stage 1 that ignores CFLAGS.
             M4="$M4" "$SOURCE/configure" \
                 --prefix="$prefix" \
+                --disable-bootstrap \
                 --enable-languages=c,c++ \
                 --disable-shared \
                 --enable-static \
@@ -226,7 +234,7 @@ build_linux_native() {
                 --disable-werror \
                 --enable-checking=release
         )
-        printf '%s\n' "$COMMIT:$NATIVE_LINUX_PROFILE" > "$build/.source-commit"
+        printf '%s\n' "$COMMIT:$NATIVE_LINUX_PROFILE:$GCC_CFLAGS" > "$build/.source-commit"
     fi
 
     build_compiler_and_runtimes "$build" "$stage"
@@ -320,7 +328,7 @@ build_linux_arm64_cross() {
                 --disable-werror \
                 --enable-checking=release
         )
-        printf '%s\n' "$COMMIT:$LINUX_ARM64_CROSS_PROFILE" > "$build/.source-commit"
+        printf '%s\n' "$COMMIT:$LINUX_ARM64_CROSS_PROFILE:$GCC_CFLAGS" > "$build/.source-commit"
     fi
 
     build_compiler_and_runtimes "$build" "$stage"
@@ -370,7 +378,7 @@ build_linux_arm64() {
                 --disable-werror \
                 --enable-checking=release
         )
-        printf '%s\n' "$COMMIT:$LINUX_ARM64_PROFILE" > "$build/.source-commit"
+        printf '%s\n' "$COMMIT:$LINUX_ARM64_PROFILE:$GCC_CFLAGS" > "$build/.source-commit"
     fi
 
     find "$build" -path '*/gcc/gengtype-lex.cc' -type f -size 0 -delete
@@ -448,7 +456,7 @@ build_windows_native() {
                 --disable-werror \
                 --enable-checking=release
         )
-        printf '%s\n' "$COMMIT:$NATIVE_WINDOWS_PROFILE" > "$build/.source-commit"
+        printf '%s\n' "$COMMIT:$NATIVE_WINDOWS_PROFILE:$GCC_CFLAGS" > "$build/.source-commit"
     fi
 
     find "$build" -path '*/gcc/gengtype-lex.cc' -type f -size 0 -delete

@@ -110,6 +110,9 @@ BUILD_TARGETS=linux-native scripts/build-in-docker.sh
 ls dist/
 ```
 
+GCC and its runtime libraries are built with `-O2` and no debug info, which keeps the build faster
+and the archives smaller. Set `GCC_CFLAGS="-g -O2"` to keep debug info.
+
 `scripts/build.sh` can also run directly on x86-64 Debian bookworm with the packages listed in
 `scripts/build-in-docker.sh`. Build trees go to `work/` and are reused while the GCC commit and
 configure options stay the same.
