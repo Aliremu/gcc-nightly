@@ -1,0 +1,7 @@
+{
+  "file": "gcc-linux-native-d3b594da974d.tar.zst",
+  "url": "https://github.com/Aliremu/gcc-nightly/releases/download/17.0.0-20261028-d3b594da974d/gcc-linux-native-d3b594da974d.tar.zst",
+  "sha256": "ec3d4fe7cf565aed29e249ba8b530f2966bacf721335a3aa85d0ceb389be2585",
+  "version": "17.0.0",
+  "commit": "d3b594da974d"
+}
