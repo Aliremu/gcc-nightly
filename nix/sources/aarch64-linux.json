@@ -1,7 +1,7 @@
 {
-  "file": "gcc-linux-arm64-native-dfec11f097ed.tar.zst",
-  "url": "https://github.com/Aliremu/gcc-nightly/releases/download/17.0.0-20261116-dfec11f097ed/gcc-linux-arm64-native-dfec11f097ed.tar.zst",
-  "sha256": "953253a19d2596452da70103b8197b9eddad560633d1517adf0491a24d5747f0",
+  "file": "gcc-linux-arm64-native-4cb25d3a3d60.tar.zst",
+  "url": "https://github.com/Aliremu/gcc-nightly/releases/download/17.0.0-20261123-4cb25d3a3d60/gcc-linux-arm64-native-4cb25d3a3d60.tar.zst",
+  "sha256": "f983b71a4077d95b7065f66c35238ece8d7f23a1cbb2732a9de66d48c4e4501a",
   "version": "17.0.0",
-  "commit": "dfec11f097ed"
+  "commit": "4cb25d3a3d60"
 }

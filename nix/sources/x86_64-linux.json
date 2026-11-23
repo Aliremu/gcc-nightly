@@ -1,7 +1,7 @@
 {
-  "file": "gcc-linux-native-dfec11f097ed.tar.zst",
-  "url": "https://github.com/Aliremu/gcc-nightly/releases/download/17.0.0-20261116-dfec11f097ed/gcc-linux-native-dfec11f097ed.tar.zst",
-  "sha256": "4eb5c3cfb75a58e747dfe4d00895adad9fd3e360529960feb94cce995a9a56e3",
+  "file": "gcc-linux-native-4cb25d3a3d60.tar.zst",
+  "url": "https://github.com/Aliremu/gcc-nightly/releases/download/17.0.0-20261123-4cb25d3a3d60/gcc-linux-native-4cb25d3a3d60.tar.zst",
+  "sha256": "2571bc88abbd4bdab21021e612407491939b61daa90943bdc4b2b8ba4a42696b",
   "version": "17.0.0",
-  "commit": "dfec11f097ed"
+  "commit": "4cb25d3a3d60"
 }
